@@ -1,12 +1,43 @@
 #include <stdio.h>
-#include <stdbool.h>
 
 
-bool check(char* text_for_compress, char* decompress_text);
+
+unsigned char check(char* sourse_txt, char* decompress_text) {
+    if (sourse_txt && decompress_text) {
+        FILE* ptr_sourse_txt = fopen(sourse_txt, "rb");
+        FILE* ptr_decompress_text = fopen(decompress_text, "rb");
+        if (ptr_sourse_txt && ptr_decompress_text) {
+
+            char tmp1 = 0;
+            char tmp2 = 0;
+
+            while (tmp1 == tmp2 && tmp1 != EOF) {
+                tmp1 = getc(ptr_sourse_txt);
+                tmp2 = getc(ptr_decompress_text);
+            }
+
+
+            fclose(ptr_sourse_txt);
+            fclose(ptr_decompress_text);
+            if (tmp1 != tmp2)
+            {
+                return 3;
+            }
+
+            _fcloseall();
+            return 0;
+
+        }
+        _fcloseall();
+        return 1;
+    }
+    _fcloseall();
+    return 2;
+}
 
 unsigned char compress(char* text_for_compress, char* decompress_text) {
     if (text_for_compress && decompress_text) {
-        FILE* ptr_text_for_compress1 = fopen(text_for_compress, "rb");
+        FILE* ptr_text_for_compress1 = fopen(text_for_compress, "rb");//сказать про 0D(табуляция)
         FILE* ptr_text_for_compress2 = fopen(text_for_compress, "rb");// для подсчета
         FILE* ptr_decompressed_text = fopen(decompress_text, "wb");//
         if (ptr_text_for_compress1 && ptr_text_for_compress2 && ptr_decompressed_text) {
@@ -52,7 +83,7 @@ unsigned char compress(char* text_for_compress, char* decompress_text) {
         return 1;
     }
     _fcloseall();
-    return 3;
+    return 2;
 }
 
 unsigned char decompress(char* compressed_text, char* text_for_decompress) {
@@ -113,6 +144,8 @@ int main() {
     char path2[] = "after_decompress.txt";
     unsigned char conclusion1 = 0;
     unsigned char conclusion2 = 0;
+    unsigned char conclusion3 = 0;
+
 
 
     printf("Start compressing\n");
@@ -137,7 +170,7 @@ int main() {
     printf("Start decompressing\n");
     conclusion2 = decompress(path1, path2);
     printf("Decompressing done\n");
-    printf("Deompress conclusion: ");
+    printf("Decompress conclusion: ");
     switch (conclusion2)
     {
     case 0:
@@ -152,9 +185,26 @@ int main() {
         printf("Unknown ERR\n\n");
     }
 
+    printf("Start comparing\n");
+    conclusion3 = check(path_original, path2);
+    printf("Comparing done\n");
+    printf("Compare conclusion: ");
+    switch (conclusion3)
+    {
+    case 0:
+        printf("Success\n\n");
+        break;
+    case 1:
+        printf("ERR: files don't oppened or created\n\n");
+        break;
+    case 2:
+        printf("ERR: the pointers are wrong\n\n");
+    case 3:
+        printf("ERR: files are different\n\n");
+    default:
+        printf("Unknown ERR\n\n");
+    }
 
 
-
-    //дописать функцию сравнения
     return 0;
 }
