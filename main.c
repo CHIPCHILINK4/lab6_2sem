@@ -35,7 +35,7 @@ void compressss(char* str) {
                 for (size_t j = 1; j < 8; j++)
                 {
                     str[i] = buf[j];
-                    i++
+                    i++;
                 }
                 ix += 8;
             }
@@ -141,7 +141,7 @@ int main() {
         printf("Unknown ERR\n\n");
     }
 
-    //дописать функцию сравнения
 
+    //дописать функцию сравнения
     return 0;
 }
