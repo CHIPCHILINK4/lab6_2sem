@@ -1,8 +1,56 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 
+void compressss(char* str) {
+    if (str) {
+        unsigned char set_mask = 128;
+        unsigned char mask = 1;
+        int i = 0, ix = 0, len = 0;
+        char buf[8] = { 0 };
+        for (; str[i]; i++);
 
+        len = i;
+        i = 0;
 
+        bool ost_bytes = false;
+        if (len - ix >= 8) {
+            ost_bytes = true;
+        }
+        while (ost_bytes){
+            buf[0] = str[ix];
+            if (len - ix < 8) {
+                ost_bytes = false;
+            }
+            if (ost_bytes)
+            {
+                mask = 64;
+                for (size_t j = 1; j < 8; j++) {
+                    buf[j] = str[ix];
+                    if (buf[0] && mask) {
+                        buf[j] = buf[j] | set_mask;
+                    }
+                    mask >>= 1;
+                }
+                for (size_t j = 1; j < 8; j++)
+                {
+                    str[i] = buf[j];
+                    i++
+                }
+                ix += 8;
+            }
+        }
+        if (!ost_bytes) {
+            for  (int j = len- ix; ix<len ; ix++)
+            {
+                str[i] = str[len - j];
+                i++; j--;
+            }
+        }
+        str[i] = '\0';
+    }
+
+}
 
 
 
@@ -92,7 +140,8 @@ int main() {
     default:
         printf("Unknown ERR\n\n");
     }
-//дописать функцию сравнения
+
+    //дописать функцию сравнения
 
     return 0;
 }
