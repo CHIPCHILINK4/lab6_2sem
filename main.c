@@ -1,11 +1,11 @@
 #include <stdio.h>
-
+#include <stdbool.h>
 
 
 unsigned char check(char* sourse_txt, char* decompress_text) {
     if (sourse_txt && decompress_text) {
-        FILE* ptr_sourse_txt = fopen(sourse_txt, "rb");
-        FILE* ptr_decompress_text = fopen(decompress_text, "rb");
+        FILE* ptr_sourse_txt = fopen(sourse_txt, "r");
+        FILE* ptr_decompress_text = fopen(decompress_text, "r");
         if (ptr_sourse_txt && ptr_decompress_text) {
 
             char tmp1 = 0;
@@ -37,18 +37,19 @@ unsigned char check(char* sourse_txt, char* decompress_text) {
 
 unsigned char compress(char* text_for_compress, char* decompress_text) {
     if (text_for_compress && decompress_text) {
-        FILE* ptr_text_for_compress1 = fopen(text_for_compress, "rb");//сказать про 0D(табуляция)
-        FILE* ptr_text_for_compress2 = fopen(text_for_compress, "rb");// для подсчета
-        FILE* ptr_decompressed_text = fopen(decompress_text, "wb");//
-        if (ptr_text_for_compress1 && ptr_text_for_compress2 && ptr_decompressed_text) {
+        FILE* ptr_text_for_compress1 = fopen(text_for_compress, "r");//сказать про 0D(табуляция)
+        //FILE* ptr_text_for_compress2 = fopen(text_for_compress, "r");// для подсчета
+        FILE* ptr_decompressed_text = fopen(decompress_text, "w");//
+        if (ptr_text_for_compress1 && /*ptr_text_for_compress2 &&*/ ptr_decompressed_text) {
             unsigned char set_mask = 128;
             unsigned char mask = 1;
             int pos = 0;
             char buf[8] = { 0 };
             int tmp = 0;
+            bool flag = true;
 
-            while (getc(ptr_text_for_compress2) != EOF) {
-                for (; ((tmp = (fscanf_s(ptr_text_for_compress1, "%c", (buf + (pos % 8)), 1))) != -1) && (pos % 8 != 7); pos++);
+            do {
+                for (; ((tmp = (fscanf_s(ptr_text_for_compress1, "%c", (buf + pos), 1))) != -1) && (pos!= 7); pos++);
                 pos = 0 ;
 
                 if (tmp == EOF) {//значит остаточные байты
@@ -56,6 +57,7 @@ unsigned char compress(char* text_for_compress, char* decompress_text) {
                     {
                         putc(buf[j], ptr_decompressed_text);
                         buf[j] = 0;
+                        flag = false;
                     }
                 }
                 else {
@@ -73,8 +75,8 @@ unsigned char compress(char* text_for_compress, char* decompress_text) {
                         buf[j] = 0;
                     }
                 }
-            }
-            fclose(ptr_text_for_compress2);
+            } while (flag);
+            fclose(ptr_decompressed_text);
             fclose(ptr_text_for_compress1);
             _fcloseall();
             return 0;
@@ -88,19 +90,20 @@ unsigned char compress(char* text_for_compress, char* decompress_text) {
 
 unsigned char decompress(char* compressed_text, char* text_for_decompress) {
     if (compressed_text && text_for_decompress) {
-        FILE* ptr_text_for_decompress1 = fopen(compressed_text, "rb");
-        FILE* ptr_text_for_decompress2 = fopen(compressed_text, "rb");
-        FILE* ptr_decompressed_text = fopen(text_for_decompress, "wb");
-        if (ptr_text_for_decompress1 && ptr_text_for_decompress2 && ptr_decompressed_text) {
+        FILE* ptr_text_for_decompress1 = fopen(compressed_text, "r");
+        //FILE* ptr_text_for_decompress2 = fopen(compressed_text, "r");
+        FILE* ptr_decompressed_text = fopen(text_for_decompress, "w");
+        if (ptr_text_for_decompress1 && /*ptr_text_for_decompress2 &&*/ ptr_decompressed_text) {
             unsigned char set_mask = 128;
             unsigned char mask = 1;
             int pos = 0;
             char buf[8] = { 0 };
             int tmp = 0;
+            bool flag = true;
 
-            while (getc(ptr_text_for_decompress2) != EOF) {
+            do  {
 
-                for (; ((tmp = (fscanf_s(ptr_text_for_decompress1, "%c", ((buf + (pos % 8) + 1)), 1))) != -1) && (pos % 7 != 6); pos++);
+                for (; ((tmp = (fscanf_s(ptr_text_for_decompress1, "%c", ((buf + pos + 1)), 1))) != -1) && (pos != 6); pos++);
                 pos = 0;
 
                 if (tmp == EOF) {//значит остаточные байты
@@ -108,6 +111,8 @@ unsigned char decompress(char* compressed_text, char* text_for_decompress) {
                         putc(buf[j], ptr_decompressed_text);
                         buf[j] = 0;
                     }
+                    flag = false;
+
                 }
                 else {
                     mask = 64;
@@ -127,7 +132,9 @@ unsigned char decompress(char* compressed_text, char* text_for_decompress) {
                     }
 
                 }
-            }
+            } while (flag);
+            fclose(ptr_decompressed_text);
+            fclose(ptr_text_for_decompress1);
             _fcloseall();
             return 0;
         }
