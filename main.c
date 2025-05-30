@@ -57,8 +57,8 @@ unsigned char compress(char* text_for_compress, char* decompress_text) {
                     {
                         putc(buf[j], ptr_decompressed_text);
                         buf[j] = 0;
-                        flag = false;
                     }
+                    flag = false;
                 }
                 else {
                     mask = 64;
