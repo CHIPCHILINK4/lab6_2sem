@@ -49,16 +49,16 @@ unsigned char compress(char* text_for_compress, char* decompress_text) {
             bool flag = true;
 
             do {
-                for (; ((tmp = (fscanf_s(ptr_text_for_compress1, "%c", (buf + pos), 1))) != -1) && (pos!= 7); pos++);
-                pos = 0 ;
+                for (; ((tmp = (fscanf_s(ptr_text_for_compress1, "%c", (buf + pos), 1))) != -1) && (pos != 7); pos++);
+                pos = 0;
 
                 if (tmp == EOF) {//значит остаточные байты
                     for (int j = 0; buf[j]; j++)
                     {
                         putc(buf[j], ptr_decompressed_text);
                         buf[j] = 0;
+                        flag = false;
                     }
-                    flag = false;
                 }
                 else {
                     mask = 64;
@@ -101,7 +101,7 @@ unsigned char decompress(char* compressed_text, char* text_for_decompress) {
             int tmp = 0;
             bool flag = true;
 
-            do  {
+            do {
 
                 for (; ((tmp = (fscanf_s(ptr_text_for_decompress1, "%c", ((buf + pos + 1)), 1))) != -1) && (pos != 6); pos++);
                 pos = 0;
@@ -169,6 +169,7 @@ int main() {
         break;
     case 2:
         printf("the pointers are wrong\n\n");
+        break;
     default:
         printf("the pointers are wrong\n\n");
     }
@@ -188,6 +189,7 @@ int main() {
         break;
     case 2:
         printf("ERR: the pointers are wrong\n\n");
+        break;
     default:
         printf("Unknown ERR\n\n");
     }
@@ -206,8 +208,10 @@ int main() {
         break;
     case 2:
         printf("ERR: the pointers are wrong\n\n");
+        break;
     case 3:
         printf("ERR: files are different\n\n");
+        break;
     default:
         printf("Unknown ERR\n\n");
     }
