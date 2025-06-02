@@ -23,15 +23,13 @@ unsigned char check(char* sourse_txt, char* decompress_text) {
             {
                 return 3;
             }
-
-            _fcloseall();
             return 0;
 
         }
-        _fcloseall();
+        fclose(ptr_sourse_txt);
+        fclose(ptr_decompress_text);
         return 1;
     }
-    _fcloseall();
     return 2;
 }
 
@@ -49,7 +47,7 @@ unsigned char compress(char* text_for_compress, char* decompress_text) {
             bool flag = true;
 
             do {
-                for (; ((tmp = (fscanf_s(ptr_text_for_compress1, "%c", (buf + pos), 1))) != -1) && (pos != 7); pos++);
+                for (; ((tmp = (fscanf(ptr_text_for_compress1, "%c", (buf + pos)))) != -1) && (pos != 7); pos++);
                 pos = 0;
 
                 if (tmp == EOF) {//значит остаточные байты
@@ -78,13 +76,12 @@ unsigned char compress(char* text_for_compress, char* decompress_text) {
             } while (flag);
             fclose(ptr_decompressed_text);
             fclose(ptr_text_for_compress1);
-            _fcloseall();
             return 0;
         }
-        _fcloseall();
+        fclose(ptr_decompressed_text);
+        fclose(ptr_text_for_compress1);
         return 1;
     }
-    _fcloseall();
     return 2;
 }
 
@@ -103,7 +100,7 @@ unsigned char decompress(char* compressed_text, char* text_for_decompress) {
 
             do {
 
-                for (; ((tmp = (fscanf_s(ptr_text_for_decompress1, "%c", ((buf + pos + 1)), 1))) != -1) && (pos != 6); pos++);
+                for (; ((tmp = (fscanf(ptr_text_for_decompress1, "%c", (buf + pos + 1)))) != -1) && (pos != 6); pos++);
                 pos = 0;
 
                 if (tmp == EOF) {//значит остаточные байты
@@ -135,18 +132,17 @@ unsigned char decompress(char* compressed_text, char* text_for_decompress) {
             } while (flag);
             fclose(ptr_decompressed_text);
             fclose(ptr_text_for_decompress1);
-            _fcloseall();
             return 0;
         }
-        _fcloseall();
+        fclose(ptr_decompressed_text);
+        fclose(ptr_text_for_decompress1);
         return 1;
     }
-    _fcloseall();
     return 2;
 }
 
 int main() {
-    char path_original[] = "sourse/original.txt";
+    char path_original[] = "original.txt";
     char path1[] = "before_decompress.txt";
     char path2[] = "after_decompress.txt";
     unsigned char conclusion1 = 0;
