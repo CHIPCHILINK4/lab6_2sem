@@ -45,17 +45,21 @@ unsigned char compress(char* text_for_compress, char* decompress_text) {
             char buf[8] = { 0 };
             int tmp = 0;
             bool flag = true;
+            int a = 0;
 
             do {
+                a++;
+                printf("%d\n",a);
                 for (; ((tmp = (fscanf(ptr_text_for_compress1, "%c", (buf + pos)))) != -1) && (pos != 7); pos++);
                 pos = 0;
 
                 if (tmp == EOF) {//значит остаточные байты
+                    flag = false;
                     for (int j = 0; buf[j]; j++)
                     {
                         putc(buf[j], ptr_decompressed_text);
                         buf[j] = 0;
-                        flag = false;
+
                     }
                 }
                 else {
