@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int check(unsigned long a, unsigned long b) {// хуйня
+int check(unsigned long a, unsigned long b) {
     if ((a&&b))
     {
         unsigned long mask = 1;
